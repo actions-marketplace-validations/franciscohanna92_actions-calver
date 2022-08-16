@@ -1,4 +1,4 @@
-name: 'Calver Release'
+name: 'Calendar Versioning'
 description: 'Automatically create Calver compliant tags or releases based on PR labels'
 author: 'Stéphane Bour'
 
