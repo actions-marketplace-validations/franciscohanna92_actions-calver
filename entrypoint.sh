@@ -16,8 +16,7 @@ NAME="${2}"
 MESSAGE="${3}"
 DRAFT="${4}"
 PRE="${5}"
-CREATE_RELEASE="${6}"
-DATE_FORMAT="${7}"
+DATE_FORMAT="${6}"
 
 # Security
 git config --global --add safe.directory /github/workspace
@@ -45,32 +44,8 @@ if [ "${MAJOR_LAST_RELEASE}" = "${NEXT_RELEASE}" ]; then
     echo "Minor release"
 fi
 
-if [ "${NAME}" = "0" ]; then
-	NAME="release: version ${NEXT_RELEASE}"
-fi
-
-if [ "${MESSAGE}" = "0" ]; then
-  MESSAGE=$(conventional-changelog)
-fi
-
+echo "Last release : ${LAST_RELEASE}"
 echo "Next release : ${NEXT_RELEASE}"
 
-echo "${MESSAGE}"
-
-echo "Create release : ${CREATE_RELEASE}"
-
-if [ "${CREATE_RELEASE}" = "true" ] || [ "${CREATE_RELEASE}" = true ]; then
-  JSON_STRING=$( jq -n \
-                    --arg tn "$NEXT_RELEASE" \
-                    --arg tc "$BRANCH" \
-                    --arg n "$NEXT_RELEASE" \
-                    --arg b "$MESSAGE" \
-                    --argjson d "$DRAFT" \
-                    --argjson p "$PRE" \
-                    '{tag_name: $tn, target_commitish: $tc, name: $n, body: $b, draft: $d, prerelease: $p}' )
-  echo "${JSON_STRING}"
-  OUTPUT=$(curl -s --data "${JSON_STRING}" -H "Authorization: token ${GITHUB_TOKEN}" "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases")
-  echo "${OUTPUT}" | jq
-fi;
-
-echo ::set-output name=release::"${NEXT_RELEASE}"
+echo ::set-output name=lastRelease::"${LAST_RELEASE}"
+echo ::set-output name=nextRelease::"${NEXT_RELEASE}"
